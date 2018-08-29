@@ -1,53 +1,65 @@
 from touristsapp.models import Location, Visit
 from touristsapp.serializers import LocationSerializer, VisitSerializer
 from rest_framework import generics
+from django.contrib.auth.models import User
+from touristsapp.serializers import UserSerializer
+from rest_framework import permissions
+from touristsapp.permissions import IsOwnerOrReadOnly
+from django.http import HttpResponseRedirect
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from django.views import View
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import View
+from django.contrib import auth
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'locations': reverse('location-list', request=request, format=format),
+        'visits': reverse('visit-list', request=request, format=format)
+    })
 
 
 class LocationList(generics.ListCreateAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-
-class VisitList(generics.ListCreateAPIView):
+class VisitListPost(generics.CreateAPIView):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+
+class VisitList(generics.ListAPIView):
+    queryset = Visit.objects.all()
+    serializer_class = VisitSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class VisitDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
