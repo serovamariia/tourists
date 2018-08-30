@@ -7,6 +7,11 @@
     $ virtualenv env
     $ source env/bin/activate
     $ pip install -r requirements.txt
+    
+Run the migrations:
+
+    $ python manage.py makemigrations touristsapp   
+    $ python manage.py migrate
        
 Starting server:
 
