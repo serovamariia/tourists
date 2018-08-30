@@ -38,3 +38,4 @@ Check-in in location:
 Get some info:
 
     $ http http://localhost:8000/locations/1/ratio/ "Authorization: JWT <your_token>"
+    $ http http://localhost:8000/users/1/ratio/ "Authorization: JWT <your_token>"
