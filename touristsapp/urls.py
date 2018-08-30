@@ -5,7 +5,6 @@ from rest_framework_jwt.views import obtain_jwt_token
 from touristsapp import views
 
 urlpatterns = [
-    url(r'^$', views.api_root),
     url(r'^register/$', views.CreateUserView.as_view()),
     url(r'^locations/$', views.LocationList.as_view()),
     url(r'^locations/(?P<pk>[0-9]+)$', views.LocationDetail.as_view()),
