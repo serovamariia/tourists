@@ -15,11 +15,11 @@ class VisitSerializer(serializers.ModelSerializer):
 
 
 class LocationSerializer(serializers.ModelSerializer):
-    locations = VisitSerializer(many=True, read_only=True)
+    visitors = VisitSerializer(many=True, read_only=True)
 
     class Meta:
         model = Location
-        fields = ('id', 'country', 'city', 'name', 'description', 'locations')
+        fields = ('id', 'country', 'city', 'name', 'description', 'visitors')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -41,16 +41,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class VisitRatioSerializer(serializers.ModelSerializer):
-    locations = VisitSerializer(many=True, read_only=True)
-    count = serializers.ReadOnlyField(source='locations.count')
+    visitors = VisitSerializer(many=True, read_only=True)
+    count = serializers.ReadOnlyField(source='visitors.count')
     avg = serializers.SerializerMethodField()
 
     def get_avg(self, obj):
-        return obj.locations.all().aggregate(Avg('ratio'))['ratio__avg']
+        return obj.visitors.all().aggregate(Avg('ratio'))['ratio__avg']
 
     class Meta:
         model = Location
-        fields = ('count', 'avg', 'locations')
+        fields = ('count', 'avg', 'visitors')
 
 
 class VisitUserRatioSerializer(serializers.ModelSerializer):
