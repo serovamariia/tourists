@@ -12,6 +12,8 @@ from django.views import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
 from django.contrib import auth
+from django.views.generic.edit import FormView
+from django.contrib.auth.forms import UserCreationForm
 
 
 @api_view(['GET'])
@@ -49,14 +51,14 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
 
 
-class UserRatio(generics.ListAPIView):
-    queryset = Visit.objects.all()
-    serializer_class = VisitUserRatioSerializer
-
-
 class RatioList(generics.RetrieveAPIView):
     queryset = Location.objects.all()
     serializer_class = VisitRatioSerializer
+
+
+class UserRatioList(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = VisitUserRatioSerializer
 
 
 class VisitList(generics.ListAPIView):
@@ -74,3 +76,14 @@ class VisitDetail(generics.RetrieveUpdateDestroyAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class RegisterFormView(FormView):
+    form_class = UserCreationForm
+
+    # Шаблон, который будет использоваться при отображении представления.
+    template_name = ""
+
+    def form_valid(self, form):
+        form.save()
+        return super(RegisterFormView, self).form_valid(form)
