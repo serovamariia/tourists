@@ -1,8 +1,8 @@
-from django.conf.urls import include
-from django.conf.urls import url
+from django.conf.urls import include, url
 from rest_framework.urlpatterns import format_suffix_patterns
-from touristsapp import views
 from rest_framework_jwt.views import obtain_jwt_token
+
+from touristsapp import views
 
 urlpatterns = [
     url(r'^$', views.api_root),

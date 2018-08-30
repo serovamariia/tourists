@@ -1,27 +1,12 @@
-from touristsapp.models import Location, Visit
-from touristsapp.serializers import (
-    LocationSerializer,
-    VisitSerializer,
-    VisitRatioSerializer,
-    VisitUserRatioSerializer,
-    UserSerializer
-)
-from rest_framework import generics
-from django.contrib.auth.models import User
-from rest_framework import permissions
-from touristsapp.permissions import IsOwnerOrReadOnly
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from rest_framework import generics, permissions
 
-
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'locations': reverse('location-list', request=request, format=format),
-        'visits': reverse('visit-list', request=request, format=format)
-    })
+from touristsapp.models import Location, Visit
+from touristsapp.permissions import IsOwnerOrReadOnly
+from touristsapp.serializers import (LocationSerializer, UserSerializer,
+                                     VisitRatioSerializer, VisitSerializer,
+                                     VisitUserRatioSerializer)
 
 
 class LocationList(generics.ListCreateAPIView):
