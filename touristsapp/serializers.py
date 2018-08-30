@@ -22,12 +22,15 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
     visits = VisitSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'password', 'visits')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password', 'visits')
 
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
