@@ -3,26 +3,51 @@ from touristsapp.models import Location, Visit
 from django.contrib.auth.models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
-    visits = serializers.PrimaryKeyRelatedField(many=True, queryset=Visit.objects.all())
+class VisitSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
-        model = User
-        fields = ('id', 'username', 'visits')
+        model = Visit
+        fields = ('id', 'user', 'date', 'ratio', 'location_id')
 
 
 class LocationSerializer(serializers.ModelSerializer):
-    locations = serializers.PrimaryKeyRelatedField(many=True, queryset=Location.objects.all(), required=False)
+    locations = VisitSerializer(many=True, read_only=True)
 
     class Meta:
         model = Location
         fields = ('id', 'country', 'city', 'name', 'description', 'locations')
 
 
-class VisitSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
-    location = serializers.ReadOnlyField(source='locations.name')
+class UserSerializer(serializers.ModelSerializer):
+    visits = VisitSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Visit
-        fields = ('id', 'user', 'date', 'ratio', 'location')
+        model = User
+        fields = '__all__'
+        extra_fields = ['visits']
+
+
+class VisitUserRatioSerializer(serializers.ModelSerializer):
+    visitors = VisitSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = '__all__'
+        extra_fields = ['visits']
+
+
+class VisitRatioSerializer(serializers.ModelSerializer):
+    visitors = VisitSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Location
+        fields = ('id', 'country', 'city', 'name', 'description', 'visitors')
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    visits = VisitSerializer()
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'visits')
