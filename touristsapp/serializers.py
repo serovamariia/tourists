@@ -1,14 +1,16 @@
 from rest_framework import serializers
 from touristsapp.models import Location, Visit
 from django.contrib.auth.models import User
+from django.db.models import Avg
 
 
 class VisitSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    user_id = serializers.ReadOnlyField(source='user.id')
 
     class Meta:
         model = Visit
-        fields = ('id', 'user', 'date', 'ratio', 'location_id')
+        fields = ('id', 'user', 'date', 'ratio', 'user_id')
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -24,12 +26,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
-        extra_fields = ['visits']
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'visits')
 
 
 class VisitUserRatioSerializer(serializers.ModelSerializer):
-    visitors = VisitSerializer(many=True, read_only=True)
+    visits = VisitSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -38,11 +39,16 @@ class VisitUserRatioSerializer(serializers.ModelSerializer):
 
 
 class VisitRatioSerializer(serializers.ModelSerializer):
-    visitors = VisitSerializer(many=True, read_only=True)
+    locations = VisitSerializer(many=True, read_only=True)
+    count = serializers.ReadOnlyField(source='locations.count')
+    avg = serializers.SerializerMethodField()
+
+    def get_avg(self, obj):
+        return obj.locations.all().aggregate(Avg('ratio'))['ratio__avg']
 
     class Meta:
         model = Location
-        fields = ('id', 'country', 'city', 'name', 'description', 'visitors')
+        fields = ('count', 'avg', 'locations')
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

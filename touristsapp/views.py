@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from touristsapp.serializers import UserSerializer, UserDetailSerializer
 from rest_framework import permissions
 from touristsapp.permissions import IsOwnerOrReadOnly
-from django.http import HttpResponseRedirect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -55,7 +54,7 @@ class UserRatio(generics.ListAPIView):
     serializer_class = VisitUserRatioSerializer
 
 
-class RatioList(generics.ListAPIView):
+class RatioList(generics.RetrieveAPIView):
     queryset = Location.objects.all()
     serializer_class = VisitRatioSerializer
 
