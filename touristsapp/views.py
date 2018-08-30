@@ -14,6 +14,7 @@ from django.views.generic import View
 from django.contrib import auth
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
 
 @api_view(['GET'])
@@ -78,12 +79,9 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
 
-class RegisterFormView(FormView):
-    form_class = UserCreationForm
-
-    # Шаблон, который будет использоваться при отображении представления.
-    template_name = ""
-
-    def form_valid(self, form):
-        form.save()
-        return super(RegisterFormView, self).form_valid(form)
+class CreateUserView(generics.CreateAPIView):
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = UserSerializer
