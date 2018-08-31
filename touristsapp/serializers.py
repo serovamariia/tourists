@@ -8,18 +8,17 @@ from touristsapp.models import Location, Visit
 class VisitSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     user_id = serializers.ReadOnlyField(source='user.id')
+    locations = serializers.ReadOnlyField(source='location_id')
 
     class Meta:
         model = Visit
-        fields = ('id', 'user', 'date', 'ratio', 'user_id')
+        fields = ('id', 'user', 'date', 'ratio', 'user_id', 'locations')
 
 
 class LocationSerializer(serializers.ModelSerializer):
-    visitors = VisitSerializer(many=True, read_only=True)
-
     class Meta:
         model = Location
-        fields = ('id', 'country', 'city', 'name', 'description', 'visitors')
+        fields = ('id', 'country', 'city', 'name', 'description')
 
 
 class UserSerializer(serializers.ModelSerializer):
