@@ -3,10 +3,27 @@ from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 
 from touristsapp.models import Location, Visit
-from touristsapp.permissions import IsOwnerOrReadOnly
 from touristsapp.serializers import (LocationSerializer, UserSerializer,
                                      VisitRatioSerializer, VisitSerializer,
                                      VisitUserRatioSerializer)
+
+
+class CreateUserView(generics.CreateAPIView):
+    model = get_user_model()
+    permission_classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = UserSerializer
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class LocationList(generics.ListCreateAPIView):
@@ -31,19 +48,9 @@ class VisitListPost(generics.CreateAPIView):
         )
 
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
 class RatioList(generics.RetrieveAPIView):
     queryset = Location.objects.all()
     serializer_class = VisitRatioSerializer
-
-
-class UserRatioList(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = VisitUserRatioSerializer
 
 
 class VisitList(generics.ListAPIView):
@@ -57,14 +64,6 @@ class VisitDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
-class UserDetail(generics.RetrieveAPIView):
+class UserRatioList(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class CreateUserView(generics.CreateAPIView):
-    model = get_user_model()
-    permission_classes = [
-        permissions.AllowAny
-    ]
-    serializer_class = UserSerializer
+    serializer_class = VisitUserRatioSerializer
