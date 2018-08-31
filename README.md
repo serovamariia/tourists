@@ -4,7 +4,7 @@
 
     $ git clone git@github.com:manyashka146/tourists.git
     $ cd tourists
-    $ virtualenv env
+    $ python -m venv env
     $ source env/bin/activate
     $ pip install -r requirements.txt
     
