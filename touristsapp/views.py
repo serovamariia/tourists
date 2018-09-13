@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 
@@ -16,22 +17,12 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
 
-class UserList(generics.ListAPIView):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class LocationList(generics.ListCreateAPIView):
-    queryset = Location.objects.all()
-    serializer_class = LocationSerializer
-
-
-class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
+class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
