@@ -39,11 +39,6 @@ class VisitListPost(generics.CreateAPIView):
         )
 
 
-class RatioList(generics.RetrieveAPIView):
-    queryset = Location.objects.all()
-    serializer_class = VisitRatioSerializer
-
-
 class VisitList(generics.ListAPIView):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
@@ -53,6 +48,11 @@ class VisitDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+
+class RatioList(generics.RetrieveAPIView):
+    queryset = Location.objects.all()
+    serializer_class = VisitRatioSerializer
 
 
 class UserRatioList(generics.RetrieveAPIView):
